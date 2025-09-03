@@ -10,14 +10,14 @@
 
 """Functional tests for the "Injector" dependency injection framework."""
 
-from contextlib import contextmanager
-from dataclasses import dataclass
-from typing import Any, NewType, Optional, Union
 import abc
 import sys
 import threading
 import traceback
 import warnings
+from contextlib import contextmanager
+from dataclasses import dataclass
+from typing import Any, Generic, NewType, Optional, Union
 
 if sys.version_info >= (3, 9):
     from typing import Annotated
@@ -29,31 +29,32 @@ from typing import Dict, List, NewType
 import pytest
 
 from injector import (
+    AssistedBuilder,
     Binder,
     CallError,
+    CircularDependency,
+    ClassAssistedBuilder,
+    ClassProvider,
+    Error,
     Inject,
     Injector,
-    NoInject,
-    Scope,
     InstanceProvider,
-    ClassProvider,
+    Module,
+    NoInject,
+    ProviderOf,
+    Scope,
+    ScopeDecorator,
+    SingletonScope,
+    T,
+    UnknownArgument,
+    UnsatisfiedRequirement,
     get_bindings,
     inject,
     multiprovider,
     noninjectable,
+    provider,
     singleton,
     threadlocal,
-    UnsatisfiedRequirement,
-    CircularDependency,
-    Module,
-    SingletonScope,
-    ScopeDecorator,
-    AssistedBuilder,
-    provider,
-    ProviderOf,
-    ClassAssistedBuilder,
-    Error,
-    UnknownArgument,
 )
 
 
@@ -1967,3 +1968,26 @@ def test_dataclass_annotated_parameter():
     injector = Injector([configure])
     instance = injector.get(MyClass)
     assert instance.foo == 123
+
+
+@pytest.mark.xfail(sys.version_info != (3, 9), reason="Generic support only in 3.9")
+def test_inject_generic_class() -> None:
+    class GenericClass(Generic[T]):
+        pass
+
+    class InjectsGeneric:
+        @inject
+        def __init__(self, injected_generic: GenericClass[str]):
+            self.injected_generic = injected_generic
+
+    def bindings(binder: Binder) -> None:
+        binder.bind(GenericClass)
+
+    injector = Injector(bindings)
+    instance = injector.get(InjectsGeneric)
+
+    assert isinstance(instance, InjectsGeneric)
+    assert isinstance(instance.injected_generic, GenericClass)
+    # A parametrized generic class instance need to have __orig_class__
+    # without it's just an instance of a plain class
+    assert instance.injected_generic.__orig_class__ == GenericClass[str]
