@@ -1,0 +1,15 @@
+{
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "ruff.lineLength": 110,
+    "ruff.configuration": "./pyproject.toml",
+    "ruff.lint.enable": true,
+    "ruff.organizeImports": true,
+
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+	"editor.formatOnSave": true,
+}
