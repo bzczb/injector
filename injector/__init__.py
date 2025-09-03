@@ -59,31 +59,12 @@ else:
     except ImportError:
         from typing_extensions import Annotated, _AnnotatedAlias, get_type_hints
 
-
 try:
     from typing import _BaseGenericAlias as BaseGenericAlias  # type: ignore[attr-defined]
 except ImportError:  # pragma nocover
 
     class BaseGenericAlias:  # type: ignore[no-redef]
         __origin__ = None
-
-
-try:
-    from typing import _BaseGenericAlias as BaseGenericAlias  # type: ignore[attr-defined]
-except ImportError:  # pragma nocover
-
-    class BaseGenericAlias:  # type: ignore[no-redef]
-        __origin__ = None
-        pass
-
-
-try:
-    from typing import _BaseGenericAlias as BaseGenericAlias  # type: ignore[attr-defined]
-except ImportError:  # pragma nocover
-
-    class BaseGenericAlias:  # type: ignore[no-redef]
-        __origin__ = None
-        pass
 
 
 __author__ = 'Alec Thomas <alec@swapoff.org>'
