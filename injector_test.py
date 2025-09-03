@@ -1970,10 +1970,11 @@ def test_dataclass_annotated_parameter():
     assert instance.foo == 123
 
 
-@pytest.mark.xfail(sys.version_info != (3, 9), reason="Generic support only in 3.9")
+@pytest.mark.xfail(sys.version_info < (3, 9), reason="Generic support only in 3.9")
 def test_inject_generic_class() -> None:
     class GenericClass(Generic[T]):
-        pass
+        def __init__(self, args: tuple):
+            self.args = args
 
     class InjectsGeneric:
         @inject
@@ -1990,4 +1991,4 @@ def test_inject_generic_class() -> None:
     assert isinstance(instance.injected_generic, GenericClass)
     # A parametrized generic class instance need to have __orig_class__
     # without it's just an instance of a plain class
-    assert instance.injected_generic.__orig_class__ == GenericClass[str]
+    assert instance.injected_generic.args == (str,)

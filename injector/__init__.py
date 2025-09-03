@@ -278,8 +278,9 @@ class GenericClassProvider(Provider, Generic[T]):
         self._generic_alias = generic_alias
 
     def get(self, injector: 'Injector') -> T:
-        instance: T = injector.create_object(self._generic_alias.__origin__)
-        instance.__orig_class__ = self._generic_alias  # type: ignore
+        instance: T = injector.create_object(
+            self._generic_alias.__origin__, additional_kwargs={'args': self._generic_alias.__args__}
+        )
         return instance
 
 
