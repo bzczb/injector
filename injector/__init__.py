@@ -24,21 +24,21 @@ import types
 from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 from typing import (
+    TYPE_CHECKING,
     Any,
     Callable,
-    cast,
     Dict,
     Generic,
     Iterable,
     List,
     Optional,
-    overload,
     Set,
     Tuple,
     Type,
     TypeVar,
-    TYPE_CHECKING,
     Union,
+    cast,
+    overload,
 )
 
 try:
@@ -51,13 +51,13 @@ except ImportError:
 # canonical. Since this typing_extensions import is only for mypy it'll work even without
 # typing_extensions actually installed so all's good.
 if TYPE_CHECKING:
-    from typing_extensions import _AnnotatedAlias, Annotated, get_type_hints
+    from typing_extensions import Annotated, _AnnotatedAlias, get_type_hints
 else:
     # Ignoring errors here as typing_extensions stub doesn't know about those things yet
     try:
-        from typing import _AnnotatedAlias, Annotated, get_type_hints
+        from typing import Annotated, _AnnotatedAlias, get_type_hints
     except ImportError:
-        from typing_extensions import _AnnotatedAlias, Annotated, get_type_hints
+        from typing_extensions import Annotated, _AnnotatedAlias, get_type_hints
 
 
 __author__ = 'Alec Thomas <alec@swapoff.org>'
@@ -1477,7 +1477,7 @@ def noninjectable(*args: str) -> Callable[[CallableT], CallableT]:
         argspec = inspect.getfullargspec(inspect.unwrap(function))
         for arg in args:
             if arg not in argspec.args and arg not in argspec.kwonlyargs:
-                raise UnknownArgument('Unable to mark unknown argument %s ' 'as non-injectable.' % arg)
+                raise UnknownArgument('Unable to mark unknown argument %s as non-injectable.' % arg)
 
         existing: Set[str] = getattr(function, '__noninjectables__', set())
         merged = existing | set(args)

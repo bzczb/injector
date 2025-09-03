@@ -14,3 +14,4 @@ htmlcov/
 coverage.xml
 /dist/
 /injector.egg-info/
+/venv/

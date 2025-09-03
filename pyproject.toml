@@ -1,4 +1,15 @@
-[tool.black]
-line-length = 110
-target_version = ['py36', 'py37']
-skip_string_normalization = true
+[tool.ruff]
+include = ['pyproject.toml', '**.py']
+
+[tool.ruff.lint]
+select = ['E', 'F']
+# select = ['E', 'F', 'D']
+# E501: line too long
+# F821: undefined name
+# F841: local variable name is assigned but never used
+# D100: missing docstring in public module
+# D102: missing docstring in public method
+ignore = ['E501', 'F821', 'F841', 'D100', 'D102']
+
+[tool.ruff.format]
+quote-style = 'preserve'
